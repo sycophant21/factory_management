@@ -45,6 +45,7 @@ const (
 	DatasourcePassword     = "datasource.password"
 	DatasourceUrl          = "datasource.url"
 	DatasourceDatabaseName = "datasource.database.name"
+	LoggingLevel           = "logging.level.root"
 )
 
 func LoadProperties() error {

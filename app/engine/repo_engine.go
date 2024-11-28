@@ -8,6 +8,7 @@ import (
 
 	_ "github.com/go-sql-driver/mysql"
 	"xorm.io/xorm"
+	"xorm.io/xorm/names"
 )
 
 type RepoEngine[T any] struct {
@@ -16,18 +17,6 @@ type RepoEngine[T any] struct {
 
 var eng *xorm.Engine
 
-func fetchProperty[T any](propertyName string) (T, error) {
-	propertyInterface, er := util.GetProperty(propertyName)
-	var zero T
-	if er != nil {
-		return zero, er
-	}
-	property, ok := propertyInterface.(T)
-	if !ok {
-		return zero, errors.New("unable to fetch engine name")
-	}
-	return property, nil
-}
 func InitialiseEngine[T any]() (*RepoEngine[T], error) {
 	var err error
 	if eng == nil {
@@ -56,16 +45,28 @@ func InitialiseEngine[T any]() (*RepoEngine[T], error) {
 			return nil, err
 		}
 	}
+	eng.SetTableMapper(names.SnakeMapper{})
 	engine := RepoEngine[T]{eng: eng}
-	var zero T
-	typeName := reflect.TypeOf(zero).Name()
-	logg.Logger.Info("Initialised new repo engine of type "+typeName, "app.repository.repo_engine")
+	logg.Logger.Info("Initialised new repo engine of type " + reflect.TypeOf(new(T)).Name())
 	return &engine, err
 }
 
+func fetchProperty[T any](propertyName string) (T, error) {
+	propertyInterface, er := util.GetProperty(propertyName)
+	var zero T
+	if er != nil {
+		return zero, er
+	}
+	property, ok := propertyInterface.(T)
+	if !ok {
+		return zero, errors.New("unable to fetch engine name")
+	}
+	return property, nil
+}
+
 func (re *RepoEngine[T]) Create() {}
-func (re *RepoEngine[T]) ReadOne(model *T, condition *T) error {
-	modelMap, err := readOne(condition, re.eng)
+func (re *RepoEngine[T]) ReadOne(model *T, conditions ...*T) error {
+	modelMap, err := readOne(re.eng, conditions...)
 	if err != nil {
 		return err
 	}
@@ -75,21 +76,26 @@ func (re *RepoEngine[T]) ReadOne(model *T, condition *T) error {
 	}
 	return nil
 }
-func (re *RepoEngine[T]) ReadAll(condition *T) ([]*T, error) {
-	modelArr, err := readAll(condition, re.eng)
+func (re *RepoEngine[T]) ReadAll(conditions ...*T) ([]*T, error) {
+	modelArr, err := readAll(re.eng, conditions...)
 	if err != nil {
 		return nil, err
 	}
 	return modelArr, nil
 }
 
-func readOne[T any](condition *T, eng *xorm.Engine) (map[string]*T, error) {
+func readOne[T any](eng *xorm.Engine, conditions ...*T) (map[string]*T, error) {
 	modelMap := make(map[string]*T)
-	return modelMap, eng.Find(&modelMap, condition)
+	return modelMap, eng.Find(&modelMap, conditions)
 }
-func readAll[T any](condition *T, eng *xorm.Engine) ([]*T, error) {
+func readAll[T any](eng *xorm.Engine, conditions ...*T) ([]*T, error) {
 	modelArr := make([]*T, 0)
-	return modelArr, eng.Find(&modelArr, condition)
+	condiBeans := make([]interface{}, len(conditions))
+	for i, cond := range conditions {
+		condiBeans[i] = cond
+	}
+
+	return modelArr, eng.Find(&modelArr, condiBeans...)
 }
 func (re *RepoEngine[T]) Update() {}
 func (re *RepoEngine[T]) Delete() {}

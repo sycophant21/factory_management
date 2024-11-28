@@ -1,4 +1,8 @@
 package user
 
-type User struct {
-}
+type (
+	User struct {
+	}
+	Manufacturer struct{}
+	Supplier     struct{}
+)

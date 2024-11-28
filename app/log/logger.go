@@ -6,7 +6,9 @@ import (
 	"io"
 	"log"
 	"os"
+	"runtime"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -53,17 +55,45 @@ func Initialise(fileName string) error {
 	return nil
 }
 
-func (logger *StdLogger) Error(message string, fileName string) {
-	logger.doLog(message, fileName, ERROR)
+func (logger *StdLogger) Error(message string) {
+	_, fileName, _, ok := runtime.Caller(1)
+	if !ok {
+		log.Fatal("unable to fetch caller information")
+		return
+	}
+	go func() {
+		logger.doLog(message, fileName[strings.Index(fileName, "app"):], ERROR)
+	}()
 }
-func (logger *StdLogger) Warn(message string, fileName string) {
-	logger.doLog(message, fileName, WARN)
+func (logger *StdLogger) Warn(message string) {
+	_, fileName, _, ok := runtime.Caller(1)
+	if !ok {
+		log.Fatal("unable to fetch caller information")
+		return
+	}
+	go func() {
+		logger.doLog(message, fileName[strings.Index(fileName, "app"):], WARN)
+	}()
 }
-func (logger *StdLogger) Info(message string, fileName string) {
-	logger.doLog(message, fileName, INFO)
+func (logger *StdLogger) Info(message string) {
+	_, fileName, _, ok := runtime.Caller(1)
+	if !ok {
+		log.Fatal("unable to fetch caller information")
+		return
+	}
+	go func() {
+		logger.doLog(message, fileName[strings.Index(fileName, "app"):], INFO)
+	}()
 }
-func (logger *StdLogger) Debug(message string, fileName string) {
-	logger.doLog(message, fileName, DEBUG)
+func (logger *StdLogger) Debug(message string) {
+	_, fileName, _, ok := runtime.Caller(1)
+	if !ok {
+		log.Fatal("unable to fetch caller information")
+		return
+	}
+	go func() {
+		logger.doLog(message, fileName[strings.Index(fileName, "app"):], DEBUG)
+	}()
 }
 
 func (logger *StdLogger) doLog(message string, fileName string, loggingLevel LoggingLevel) {
@@ -73,6 +103,5 @@ func (logger *StdLogger) doLog(message string, fileName string, loggingLevel Log
 		}
 		logger.logger.SetPrefix(time.Now().Format("2006-01-02T15:04:05-07:00") + " " + string(loggingLevel) + " " + strconv.Itoa(logger.pid) + " ")
 		logger.logger.Println("--- [" + fmt.Sprintf("%15s", "main") + "] " + fmt.Sprintf("%-40s", fileName) + " : " + message)
-		// 2024-11-27T03:19:57.916+05:30  INFO 97914 --- [           main] controller.data.LocationTypeController   : Executed getAllLocationTypes in 1240ms
 	}
 }

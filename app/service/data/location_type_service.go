@@ -2,7 +2,7 @@ package data
 
 import (
 	"factory_management_go/app/domain/dao/location"
-	repo "factory_management_go/app/repository/data"
+	repo "factory_management_go/app/repository"
 )
 
 type LocationTypeService struct {

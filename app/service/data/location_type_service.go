@@ -2,21 +2,21 @@ package data
 
 import (
 	"factory_management_go/app/domain/dao/location"
-	repo "factory_management_go/app/repository"
+	repository "factory_management_go/app/repository"
 )
 
 type LocationTypeService struct {
-	Repository *repo.LocationTypeRepository
+	LocationTypeRepository *repository.LocationTypeRepository
 }
 
-func (l *LocationTypeService) GetAllLocationTypes(companyId string) ([]*location.LocationType, error) {
-	return l.Repository.FindAllByMetadataCompanyId(companyId)
+func (lts *LocationTypeService) GetAllLocationTypes(companyId string) ([]*location.LocationType, error) {
+	return lts.LocationTypeRepository.FindAllByMetadataCompanyId(companyId)
 }
-func (l *LocationTypeService) GetLocationTypeDetails(locationTypeId string, companyId string) (location.LocationType, error) {
-	val, err := l.Repository.FindByIdMetadataCompanyId(locationTypeId, companyId)
+func (lts *LocationTypeService) GetLocationTypeDetails(locationTypeId string, companyId string) (location.LocationType, error) {
+	val, err := lts.LocationTypeRepository.FindByIdMetadataCompanyId(locationTypeId, companyId)
 	return *val, err
 }
-func (l *LocationTypeService) GetLocationTypeDetailsFromCode(locationTypeCode string, companyId string) (location.LocationType, error) {
-	val, err := l.Repository.FindByCodeMetadataCompanyId(locationTypeCode, companyId)
+func (lts *LocationTypeService) GetLocationTypeDetailsFromCode(locationTypeCode string, companyId string) (location.LocationType, error) {
+	val, err := lts.LocationTypeRepository.FindByCodeMetadataCompanyId(locationTypeCode, companyId)
 	return *val, err
 }

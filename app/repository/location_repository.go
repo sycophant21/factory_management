@@ -8,48 +8,61 @@ import (
 )
 
 type LocationRepository struct {
-	Eng *engine.RepoEngine[location.Location]
-	Ltr *LocationTypeRepository
+	Eng                    *engine.RepoEngine[location.Location]
+	LocationTypeRepository *LocationTypeRepository
 }
 
-func (l *LocationRepository) FindAllByLocationTypeAndMetadataCompanyId(locationTypeId string, companyId string) ([]*location.Location, error) {
+func (lr *LocationRepository) FindAllByLocationTypeIdAndMetadataCompanyId(locationTypeId string, companyId string) ([]*location.Location, error) {
 	var result []*location.Location
-	locationCondition := &location.Location{LocationTypeId: locationTypeId, Metadata: metadata.Metadata{CompanyId: companyId}}
-	result, err := l.Eng.ReadAll(locationCondition)
+	locationCondition := &location.Location{LocationTypeId: locationTypeId, Metadata: &metadata.Metadata{CompanyId: companyId}}
+	result, err := lr.Eng.ReadAll(locationCondition)
 	if err != nil {
 		r := make([]*location.Location, 0)
 		result = r
 	}
-	l.getAssociatedData(companyId, result...)
+	lr.getAssociatedData(companyId, result...)
 	return result, err
 }
 
-func (l *LocationRepository) FindAllByMetadataCompanyId(companyId string) ([]*location.Location, error) {
+func (lr *LocationRepository) FindAllByLocationTypeCodeAndMetadataCompanyId(locationTypeCode string, companyId string) ([]*location.Location, error) {
 	var result []*location.Location
-	locationCondition := &location.Location{Metadata: metadata.Metadata{CompanyId: companyId}}
-	result, err := l.Eng.ReadAll(locationCondition)
+	locationCondition := &location.Location{Metadata: &metadata.Metadata{CompanyId: companyId}}
+
+	result, err := lr.Eng.ReadAllFromNestedJoinField(engine.JoinClause{JoinType: engine.INNER, TableName: (&location.LocationType{}).TableName(), Condition: "location.location_type_id = location_type.id", Args: nil}, []engine.WhereClause{{ParamName: "code", ParamValue: locationTypeCode}}, &location.Location{}, locationCondition)
 	if err != nil {
 		r := make([]*location.Location, 0)
 		result = r
 	}
-	l.getAssociatedData(companyId, result...)
+	lr.getAssociatedData(companyId, result...)
 	return result, err
 }
 
-func (l *LocationRepository) FindByIdMetadataCompanyId(locationId string, companyId string) (*location.Location, error) {
+func (lr *LocationRepository) FindAllByMetadataCompanyId(companyId string) ([]*location.Location, error) {
+	var result []*location.Location
+	locationCondition := &location.Location{Metadata: &metadata.Metadata{CompanyId: companyId}}
+	result, err := lr.Eng.ReadAll(locationCondition)
+	if err != nil {
+		r := make([]*location.Location, 0)
+		result = r
+	}
+	lr.getAssociatedData(companyId, result...)
+	return result, err
+}
+
+func (lr *LocationRepository) FindByIdMetadataCompanyId(locationId string, companyId string) (*location.Location, error) {
 	var result = &location.Location{}
-	locationCondition := &location.Location{Id: locationId, Metadata: metadata.Metadata{CompanyId: companyId}}
-	err := l.Eng.ReadOne(result, locationCondition)
-	l.getAssociatedData(companyId, result)
+	locationCondition := &location.Location{Id: locationId, Metadata: &metadata.Metadata{CompanyId: companyId}}
+	err := lr.Eng.ReadOne(result, locationCondition)
+	lr.getAssociatedData(companyId, result)
 	return result, err
 }
 
-func (l *LocationRepository) getAssociatedData(companyId string, locations ...*location.Location) {
+func (lr *LocationRepository) getAssociatedData(companyId string, locations ...*location.Location) {
 	var locationTypeIds = make([]string, 0)
 	for _, l := range locations {
 		locationTypeIds = append(locationTypeIds, l.LocationTypeId)
 	}
-	val, err := l.Ltr.FindAllInIdsAndMetadataCompanyId(companyId, locationTypeIds...)
+	val, err := lr.LocationTypeRepository.FindAllInIdsAndMetadataCompanyId(companyId, locationTypeIds...)
 	if err != nil {
 		logg.Logger.Error(err.Error())
 	} else {
@@ -58,7 +71,8 @@ func (l *LocationRepository) getAssociatedData(companyId string, locations ...*l
 			locationTypeMap[lt.Id] = lt
 		}
 		for _, l := range locations {
-			l.SetLocationType(locationTypeMap[l.LocationTypeId])
+			l.LocationType = locationTypeMap[l.LocationTypeId]
+			//l.SetLocationType(locationTypeMap[l.LocationTypeId])
 		}
 	}
 }

@@ -8,12 +8,12 @@ import (
 
 type (
 	ServiceVendor struct {
-		Id          string               `xorm:"'id' pk"`
-		Name        string               `xorm:"'name'"`
-		PhoneNumber metadata.PhoneNumber `xorm:"extends 'phone_number'"`
-		Address     string               `xorm:"'address'"`
-		Services    []machine.Machine    `xorm:"-"`
-		Metadata    metadata.Metadata    `xorm:"extends"`
+		Id          string                `xorm:"'id' pk"`
+		Name        string                `xorm:"'name'"`
+		PhoneNumber *metadata.PhoneNumber `xorm:"extends 'phone_number'"`
+		Address     string                `xorm:"'address'"`
+		Services    []*machine.Machine    `xorm:"-"`
+		Metadata    *metadata.Metadata    `xorm:"extends"`
 	}
 
 	ServiceVendorServices struct {
@@ -22,12 +22,12 @@ type (
 	}
 
 	SparePartVendor struct {
-		Id           string                `xorm:"'id' pk"`
-		Name         string                `xorm:"'name'"`
-		PhoneNumber  metadata.PhoneNumber  `xorm:"extends 'phone_number'"`
-		Address      string                `xorm:"'address'"`
-		SoldByVendor []component.SparePart `xorm:"-"`
-		Metadata     metadata.Metadata     `xorm:"extends"`
+		Id           string                 `xorm:"'id' pk"`
+		Name         string                 `xorm:"'name'"`
+		PhoneNumber  *metadata.PhoneNumber  `xorm:"extends 'phone_number'"`
+		Address      string                 `xorm:"'address'"`
+		SoldByVendor []*component.SparePart `xorm:"-"`
+		Metadata     *metadata.Metadata     `xorm:"extends"`
 	}
 
 	SparePartVendorSoldByVendor struct {

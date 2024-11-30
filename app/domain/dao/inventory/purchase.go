@@ -13,9 +13,9 @@ type (
 		Details      string                                   `xorm:"'details'"`
 		PurchaseDate *time.Time                               `xorm:"'purchase_date'"`
 		VendorId     string                                   `xorm:"'vendor_id'"`
-		Vendor       vendors.SparePartVendor                  `xorm:"-"`
+		Vendor       *vendors.SparePartVendor                 `xorm:"-"`
 		Items        map[*component.ComponentInventory]uint16 `xorm:"-"`
-		Metadata     metadata.Metadata                        `xorm:"extends"`
+		Metadata     *metadata.Metadata                       `xorm:"extends"`
 	}
 	PurchaseItems struct {
 		Items          uint16 `xorm:"'items'"`

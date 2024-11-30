@@ -7,30 +7,37 @@ import (
 )
 
 type LocationController struct {
-	Mutex   *http.ServeMux
-	Service *service.LocationService
+	Mutex           *http.ServeMux
+	LocationService *service.LocationService
 }
 
-func (l *LocationController) Initialise() {
-	l.Mutex = http.NewServeMux()
-	l.Mutex.HandleFunc("GET /getAllLocationsFromLocationType", l.GetAllLocationsFromLocationType)
-	l.Mutex.HandleFunc("GET /getAllLocations", l.GetAllLocations)
-	l.Mutex.HandleFunc("GET /getLocationDetails", l.GetLocationDetails)
+func (lc *LocationController) Initialise() {
+	lc.Mutex = http.NewServeMux()
+	lc.Mutex.HandleFunc("GET /getAllLocationsFromLocationTypeId", lc.GetAllLocationsFromLocationTypeId)
+	lc.Mutex.HandleFunc("GET /getAllLocationsFromLocationTypeCode", lc.GetAllLocationsFromLocationTypeCode)
+	lc.Mutex.HandleFunc("GET /getAllLocations", lc.GetAllLocations)
+	lc.Mutex.HandleFunc("GET /getLocationDetails", lc.GetLocationDetails)
 }
 
-func (l *LocationController) GetAllLocationsFromLocationType(writer http.ResponseWriter, request *http.Request) {
+func (lc *LocationController) GetAllLocationsFromLocationTypeId(writer http.ResponseWriter, request *http.Request) {
 	util.HandleRequest(writer, func() (interface{}, error) {
-		return l.Service.GetAllLocationsFromLocationType(request.URL.Query().Get("locationType"), request.Header.Get("Company-Id"))
-	})
-}
-func (l *LocationController) GetAllLocations(writer http.ResponseWriter, request *http.Request) {
-	util.HandleRequest(writer, func() (interface{}, error) {
-		return l.Service.GetAllLocations(request.Header.Get("Company-Id"))
+		return lc.LocationService.GetAllLocationsFromLocationTypeId(request.URL.Query().Get("locationTypeId"), request.Header.Get("Company-Id"))
 	})
 }
 
-func (l *LocationController) GetLocationDetails(writer http.ResponseWriter, request *http.Request) {
+func (lc *LocationController) GetAllLocationsFromLocationTypeCode(writer http.ResponseWriter, request *http.Request) {
 	util.HandleRequest(writer, func() (interface{}, error) {
-		return l.Service.GetLocationDetails(request.URL.Query().Get("id"), request.Header.Get("Company-Id"))
+		return lc.LocationService.GetAllLocationsFromLocationTypeCode(request.URL.Query().Get("locationTypeCode"), request.Header.Get("Company-Id"))
+	})
+}
+func (lc *LocationController) GetAllLocations(writer http.ResponseWriter, request *http.Request) {
+	util.HandleRequest(writer, func() (interface{}, error) {
+		return lc.LocationService.GetAllLocations(request.Header.Get("Company-Id"))
+	})
+}
+
+func (lc *LocationController) GetLocationDetails(writer http.ResponseWriter, request *http.Request) {
+	util.HandleRequest(writer, func() (interface{}, error) {
+		return lc.LocationService.GetLocationDetails(request.URL.Query().Get("id"), request.Header.Get("Company-Id"))
 	})
 }

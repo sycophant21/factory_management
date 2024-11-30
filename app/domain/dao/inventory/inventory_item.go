@@ -9,9 +9,9 @@ type (
 	InventoryItem struct {
 		Id         string                          `xorm:"'id' pk"`
 		ItemId     string                          `xorm:"'item_id'"`
-		Item       component.SparePart             `xorm:"-"`
+		Item       *component.SparePart            `xorm:"-"`
 		Quantities map[*InventoryItemStatus]uint16 `xorm:"-"`
-		Metadata   metadata.Metadata               `xorm:"extends"`
+		Metadata   *metadata.Metadata              `xorm:"extends"`
 	}
 	InventoryItemQuantities struct {
 		Quantities          uint16              `xorm:"'quantities'"`
@@ -19,9 +19,9 @@ type (
 		InventoryItemId     string              `xorm:"'inventory_item_id'"`
 	}
 	InventoryItemRequisition struct {
-		Id                        string                     `xorm:"'id' pk"`
-		InventoryItemTransactions []InventoryItemTransaction `xorm:"-"`
-		Metadata                  metadata.Metadata          `xorm:"extends"`
+		Id                        string                      `xorm:"'id' pk"`
+		InventoryItemTransactions []*InventoryItemTransaction `xorm:"-"`
+		Metadata                  *metadata.Metadata          `xorm:"extends"`
 	}
 	InventoryItemRequisitionInventoryItemTransactions struct {
 		InventoryItemRequisitionId string `xorm:"'inventory_item_requisition_id'"`
@@ -31,10 +31,10 @@ type (
 	InventoryItemTransaction struct {
 		Id              string                       `xorm:"'id' pk"`
 		ItemId          string                       `xorm:"'item_id'"`
-		Item            InventoryItem                `xorm:"_"`
+		Item            *InventoryItem               `xorm:"_"`
 		Quantity        uint16                       `xorm:"'quantity'"`
 		TransactionType InventoryItemTransactionType `xorm:"'transactionType'"`
-		Metadata        metadata.Metadata            `xorm:"extends"`
+		Metadata        *metadata.Metadata           `xorm:"extends"`
 	}
 	InventoryItemTransactionType string
 )

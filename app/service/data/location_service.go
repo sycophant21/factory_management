@@ -2,30 +2,22 @@ package data
 
 import (
 	"factory_management_go/app/domain/dao/location"
-	repo "factory_management_go/app/repository"
+	repository "factory_management_go/app/repository"
 )
 
 type LocationService struct {
-	Repository          *repo.LocationRepository
-	LocationTypeService *LocationTypeService
+	LocationRepository *repository.LocationRepository
 }
 
-func (l *LocationService) GetAllLocationsFromLocationType(locationTypeId string, companyId string) ([]*location.Location, error) {
-	return l.Repository.FindAllByLocationTypeAndMetadataCompanyId(locationTypeId, companyId)
+func (ls *LocationService) GetAllLocationsFromLocationTypeId(locationTypeId string, companyId string) ([]*location.Location, error) {
+	return ls.LocationRepository.FindAllByLocationTypeIdAndMetadataCompanyId(locationTypeId, companyId)
 }
-func (l *LocationService) GetAllLocations(companyId string) ([]*location.Location, error) {
-	return l.Repository.FindAllByMetadataCompanyId(companyId)
+func (ls *LocationService) GetAllLocations(companyId string) ([]*location.Location, error) {
+	return ls.LocationRepository.FindAllByMetadataCompanyId(companyId)
 }
-func (l *LocationService) GetLocationDetails(locationId string, companyId string) (location.Location, error) {
-	val, err := l.Repository.FindByIdMetadataCompanyId(locationId, companyId)
-	return *val, err
+func (ls *LocationService) GetLocationDetails(locationId string, companyId string) (*location.Location, error) {
+	return ls.LocationRepository.FindByIdMetadataCompanyId(locationId, companyId)
 }
-func (l *LocationService) GetAllLocationsFromLocationTypeCode(locationTypeCode string, companyId string) ([]*location.Location, error) {
-	locationType, err := l.LocationTypeService.GetLocationTypeDetailsFromCode(locationTypeCode, companyId)
-	if err != nil {
-		r := make([]*location.Location, 0)
-		result := r
-		return result, err
-	}
-	return l.Repository.FindAllByLocationTypeAndMetadataCompanyId(locationType.Id, companyId)
+func (ls *LocationService) GetAllLocationsFromLocationTypeCode(locationTypeCode string, companyId string) ([]*location.Location, error) {
+	return ls.LocationRepository.FindAllByLocationTypeCodeAndMetadataCompanyId(locationTypeCode, companyId)
 }

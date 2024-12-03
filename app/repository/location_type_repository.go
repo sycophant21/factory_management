@@ -21,14 +21,14 @@ func (ltr *LocationTypeRepository) FindAllByMetadataCompanyId(companyId string) 
 	return result, err
 }
 
-func (ltr *LocationTypeRepository) FindByIdMetadataCompanyId(locationTypeId string, companyId string) (*location.LocationType, error) {
+func (ltr *LocationTypeRepository) FindByIdAndMetadataCompanyId(locationTypeId string, companyId string) (*location.LocationType, error) {
 	var result = &location.LocationType{}
 	locationTypeCondition := &location.LocationType{Id: locationTypeId, Metadata: &metadata.Metadata{CompanyId: companyId}}
 	err := ltr.Eng.ReadOne(result, locationTypeCondition)
 	return result, err
 }
 
-func (ltr *LocationTypeRepository) FindByCodeMetadataCompanyId(locationTypeCode string, companyId string) (*location.LocationType, error) {
+func (ltr *LocationTypeRepository) FindByCodeAndMetadataCompanyId(locationTypeCode string, companyId string) (*location.LocationType, error) {
 	var result = &location.LocationType{}
 	locationTypeCondition := &location.LocationType{Code: locationTypeCode, Metadata: &metadata.Metadata{CompanyId: companyId}}
 	err := ltr.Eng.ReadOne(result, locationTypeCondition)

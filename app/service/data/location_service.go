@@ -15,8 +15,9 @@ func (ls *LocationService) GetAllLocationsFromLocationTypeId(locationTypeId stri
 func (ls *LocationService) GetAllLocations(companyId string) ([]*location.Location, error) {
 	return ls.LocationRepository.FindAllByMetadataCompanyId(companyId)
 }
-func (ls *LocationService) GetLocationDetails(locationId string, companyId string) (*location.Location, error) {
-	return ls.LocationRepository.FindByIdMetadataCompanyId(locationId, companyId)
+func (ls *LocationService) GetLocationDetails(locationId string, companyId string) (location.Location, error) {
+	val, err := ls.LocationRepository.FindByIdAndMetadataCompanyId(locationId, companyId)
+	return *val, err
 }
 func (ls *LocationService) GetAllLocationsFromLocationTypeCode(locationTypeCode string, companyId string) ([]*location.Location, error) {
 	return ls.LocationRepository.FindAllByLocationTypeCodeAndMetadataCompanyId(locationTypeCode, companyId)

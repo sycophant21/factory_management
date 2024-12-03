@@ -1,8 +1,9 @@
 package data
 
 import (
+	"factory_management_go/app/domain/dao/location"
 	service "factory_management_go/app/service/data"
-	"factory_management_go/app/util"
+	httpUtil "factory_management_go/app/util/http"
 	"net/http"
 )
 
@@ -17,27 +18,43 @@ func (lc *LocationController) Initialise() {
 	lc.Mutex.HandleFunc("GET /getAllLocationsFromLocationTypeCode", lc.GetAllLocationsFromLocationTypeCode)
 	lc.Mutex.HandleFunc("GET /getAllLocations", lc.GetAllLocations)
 	lc.Mutex.HandleFunc("GET /getLocationDetails", lc.GetLocationDetails)
+	lc.Mutex.HandleFunc("GET /viewLocationDetails", lc.GetLocationDetails)
 }
 
 func (lc *LocationController) GetAllLocationsFromLocationTypeId(writer http.ResponseWriter, request *http.Request) {
-	util.HandleRequest(writer, func() (interface{}, error) {
+	httpUtil.HandleRequest[[]*location.Location](writer, func() ([]*location.Location, error) {
 		return lc.LocationService.GetAllLocationsFromLocationTypeId(request.URL.Query().Get("locationTypeId"), request.Header.Get("Company-Id"))
+	}, func(data []*location.Location) interface{} {
+		return httpUtil.ConvertAllLocationsToLocationResponseDto(data)
 	})
 }
 
 func (lc *LocationController) GetAllLocationsFromLocationTypeCode(writer http.ResponseWriter, request *http.Request) {
-	util.HandleRequest(writer, func() (interface{}, error) {
+	httpUtil.HandleRequest[[]*location.Location](writer, func() ([]*location.Location, error) {
 		return lc.LocationService.GetAllLocationsFromLocationTypeCode(request.URL.Query().Get("locationTypeCode"), request.Header.Get("Company-Id"))
+	}, func(data []*location.Location) interface{} {
+		return httpUtil.ConvertAllLocationsToLocationResponseDto(data)
 	})
 }
 func (lc *LocationController) GetAllLocations(writer http.ResponseWriter, request *http.Request) {
-	util.HandleRequest(writer, func() (interface{}, error) {
+	httpUtil.HandleRequest[[]*location.Location](writer, func() ([]*location.Location, error) {
 		return lc.LocationService.GetAllLocations(request.Header.Get("Company-Id"))
+	}, func(data []*location.Location) interface{} {
+		return httpUtil.ConvertAllLocationsToLocationResponseDto(data)
 	})
 }
 
 func (lc *LocationController) GetLocationDetails(writer http.ResponseWriter, request *http.Request) {
-	util.HandleRequest(writer, func() (interface{}, error) {
+	httpUtil.HandleRequest[location.Location](writer, func() (location.Location, error) {
 		return lc.LocationService.GetLocationDetails(request.URL.Query().Get("id"), request.Header.Get("Company-Id"))
+	}, func(data location.Location) interface{} {
+		return httpUtil.ConvertLocationToLocationResponseDtoForEdit(data)
+	})
+}
+func (lc *LocationController) ViewLocationDetails(writer http.ResponseWriter, request *http.Request) {
+	httpUtil.HandleRequest[location.Location](writer, func() (location.Location, error) {
+		return lc.LocationService.GetLocationDetails(request.URL.Query().Get("id"), request.Header.Get("Company-Id"))
+	}, func(data location.Location) interface{} {
+		return httpUtil.ConvertLocationToLocationResponseDtoForView(data)
 	})
 }

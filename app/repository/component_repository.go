@@ -24,10 +24,10 @@ func (cr *ComponentRepository) FindAllByMetadataCompanyId(companyId string) ([]*
 	return result, err
 }
 
-func (cr *ComponentRepository) FindByIdMetadataCompanyId(componentId string, companyId string) (*component.Component, error) {
+func (cr *ComponentRepository) FindByIdAndMetadataCompanyId(componentId string, companyId string) (*component.Component, error) {
 	var result = &component.Component{}
-	locationCondition := &component.Component{Id: componentId, Metadata: &metadata.Metadata{CompanyId: companyId}}
-	err := cr.Eng.ReadOne(result, locationCondition)
+	componentCondition := &component.Component{Id: componentId, Metadata: &metadata.Metadata{CompanyId: companyId}}
+	err := cr.Eng.ReadOne(result, componentCondition)
 	cr.getAssociatedData(companyId, result)
 	return result, err
 }

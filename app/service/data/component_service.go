@@ -13,6 +13,7 @@ func (cs *ComponentService) GetAllComponents(companyId string) ([]*component.Com
 	return cs.ComponentRepository.FindAllByMetadataCompanyId(companyId)
 }
 
-func (cs *ComponentService) GetComponentDetails(componentId string, companyId string) (*component.Component, error) {
-	return cs.ComponentRepository.FindByIdMetadataCompanyId(componentId, companyId)
+func (cs *ComponentService) GetComponentDetails(componentId string, companyId string) (component.Component, error) {
+	val, err := cs.ComponentRepository.FindByIdAndMetadataCompanyId(componentId, companyId)
+	return *val, err
 }

@@ -30,3 +30,10 @@ func (ctr *ComponentTypeRepository) FindAllByMetadataCompanyId(companyId string)
 	}
 	return result, err
 }
+
+func (ctr *ComponentTypeRepository) FindByIdAndMetadataCompanyId(componentTypeId string, companyId string) (*component.ComponentType, error) {
+	var result = &component.ComponentType{}
+	componentTypeCondition := &component.ComponentType{Id: componentTypeId, Metadata: &metadata.Metadata{CompanyId: companyId}}
+	err := ctr.Eng.ReadOne(result, componentTypeCondition)
+	return result, err
+}

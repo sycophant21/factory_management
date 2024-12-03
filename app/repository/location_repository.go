@@ -49,7 +49,7 @@ func (lr *LocationRepository) FindAllByMetadataCompanyId(companyId string) ([]*l
 	return result, err
 }
 
-func (lr *LocationRepository) FindByIdMetadataCompanyId(locationId string, companyId string) (*location.Location, error) {
+func (lr *LocationRepository) FindByIdAndMetadataCompanyId(locationId string, companyId string) (*location.Location, error) {
 	var result = &location.Location{}
 	locationCondition := &location.Location{Id: locationId, Metadata: &metadata.Metadata{CompanyId: companyId}}
 	err := lr.Eng.ReadOne(result, locationCondition)

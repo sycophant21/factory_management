@@ -49,7 +49,7 @@ type (
 		Note                      string                     `xorm:"'note'"`
 		ComponentId               string                     `xorm:"'component_id'"`
 		Component                 *Component                 `xorm:"-"`
-		ComponentInfo             *ComponentInfo             `xorm:"extends"`
+		ComponentInventoryInfo    *ComponentInfo             `xorm:"extends"`
 		ComponentStockInformation *ComponentStockInformation `xorm:"extends"`
 		Metadata                  *metadata.Metadata         `xorm:"extends"`
 	}

@@ -4,14 +4,14 @@ import (
 	initialiser "factory_management_go/app/init"
 	logg "factory_management_go/app/log"
 	"factory_management_go/app/middleware"
-	"factory_management_go/app/util"
+	"factory_management_go/app/util/program"
 	"log"
 	"net/http"
 	"os"
 )
 
 func init() {
-	err := util.LoadProperties()
+	err := program.LoadProperties()
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -53,6 +53,7 @@ func main() {
 	mux.Handle("/component/", middleware.ContextPathMiddleware("/component", componentController.Mutex))
 	mux.Handle("/spareType/", middleware.ContextPathMiddleware("/spareType", componentController.Mutex))
 	mux.Handle("/componentType/", middleware.ContextPathMiddleware("/componentType", componentTypeController.Mutex))
+	mux.Handle("/sparePart/", middleware.ContextPathMiddleware("/sparePart", componentTypeController.Mutex))
 	mux.Handle("/options/", middleware.ContextPathMiddleware("/options", optionsController.Mutex))
 	logg.Logger.Error(http.ListenAndServe(":8080", mux).Error())
 }

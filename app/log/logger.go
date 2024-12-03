@@ -1,7 +1,7 @@
 package log
 
 import (
-	"factory_management_go/app/util"
+	util "factory_management_go/app/util/program"
 	"fmt"
 	"io"
 	"log"

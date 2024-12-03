@@ -3,7 +3,7 @@ package wrapper
 import "time"
 
 type ResponseDto struct {
-	Metadata ResponseMetadata `json:"'metadata',omitempty"`
+	Metadata *ResponseMetadata `json:"'metadata',omitempty"`
 }
 
 type ResponseMetadata struct {

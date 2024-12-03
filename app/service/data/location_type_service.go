@@ -13,10 +13,10 @@ func (lts *LocationTypeService) GetAllLocationTypes(companyId string) ([]*locati
 	return lts.LocationTypeRepository.FindAllByMetadataCompanyId(companyId)
 }
 func (lts *LocationTypeService) GetLocationTypeDetails(locationTypeId string, companyId string) (location.LocationType, error) {
-	val, err := lts.LocationTypeRepository.FindByIdMetadataCompanyId(locationTypeId, companyId)
+	val, err := lts.LocationTypeRepository.FindByIdAndMetadataCompanyId(locationTypeId, companyId)
 	return *val, err
 }
 func (lts *LocationTypeService) GetLocationTypeDetailsFromCode(locationTypeCode string, companyId string) (location.LocationType, error) {
-	val, err := lts.LocationTypeRepository.FindByCodeMetadataCompanyId(locationTypeCode, companyId)
+	val, err := lts.LocationTypeRepository.FindByCodeAndMetadataCompanyId(locationTypeCode, companyId)
 	return *val, err
 }

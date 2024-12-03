@@ -10,9 +10,10 @@ type (
 		Id         string                          `xorm:"'id' pk"`
 		ItemId     string                          `xorm:"'item_id'"`
 		Item       *component.SparePart            `xorm:"-"`
-		Quantities map[*InventoryItemStatus]uint16 `xorm:"-"`
+		Quantities map[*InventoryItemStatus]uint32 `xorm:"-"`
 		Metadata   *metadata.Metadata              `xorm:"extends"`
 	}
+	//Intermediate Entity
 	InventoryItemQuantities struct {
 		Quantities          uint16              `xorm:"'quantities'"`
 		InventoryItemStatus InventoryItemStatus `xorm:"'quantities_key'"`
@@ -23,6 +24,7 @@ type (
 		InventoryItemTransactions []*InventoryItemTransaction `xorm:"-"`
 		Metadata                  *metadata.Metadata          `xorm:"extends"`
 	}
+	//Intermediate Entity
 	InventoryItemRequisitionInventoryItemTransactions struct {
 		InventoryItemRequisitionId string `xorm:"'inventory_item_requisition_id'"`
 		InventoryItemTransactionId string `xorm:"'inventory_item_transactions_id'"`

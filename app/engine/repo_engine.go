@@ -3,7 +3,7 @@ package repository
 import (
 	"errors"
 	logg "factory_management_go/app/log"
-	"factory_management_go/app/util"
+	"factory_management_go/app/util/program"
 	"reflect"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -20,23 +20,23 @@ var eng *xorm.Engine
 func InitialiseEngine[T any]() (*RepoEngine[T], error) {
 	var err error
 	if eng == nil {
-		engineName, err := fetchProperty[string](util.DatasourceEngineName)
+		engineName, err := fetchProperty[string](program.DatasourceEngineName)
 		if err != nil {
 			return nil, err
 		}
-		username, err := fetchProperty[string](util.DatasourceUsername)
+		username, err := fetchProperty[string](program.DatasourceUsername)
 		if err != nil {
 			return nil, err
 		}
-		password, err := fetchProperty[string](util.DatasourcePassword)
+		password, err := fetchProperty[string](program.DatasourcePassword)
 		if err != nil {
 			return nil, err
 		}
-		url, err := fetchProperty[string](util.DatasourceUrl)
+		url, err := fetchProperty[string](program.DatasourceUrl)
 		if err != nil {
 			return nil, err
 		}
-		databaseName, err := fetchProperty[string](util.DatasourceDatabaseName)
+		databaseName, err := fetchProperty[string](program.DatasourceDatabaseName)
 		if err != nil {
 			return nil, err
 		}
@@ -53,7 +53,7 @@ func InitialiseEngine[T any]() (*RepoEngine[T], error) {
 }
 
 func fetchProperty[T any](propertyName string) (T, error) {
-	propertyInterface, er := util.GetProperty(propertyName)
+	propertyInterface, er := program.GetProperty(propertyName)
 	var zero T
 	if er != nil {
 		return zero, er
